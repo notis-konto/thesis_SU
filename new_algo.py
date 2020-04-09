@@ -2,7 +2,7 @@
 from __future__ import division
 import math
 import time
-
+import xlsxwriter 
 #x number of people straight
 x=1
 #y number of people turn
@@ -73,4 +73,4 @@ while x < 5:
 		#print results
 		y=y+1
 	x=x+1
-print results[0]
+print (results[0])
