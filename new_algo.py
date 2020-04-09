@@ -2,7 +2,11 @@
 from __future__ import division
 import math
 import time
+import csv
 import xlsxwriter 
+
+
+
 #x number of people straight
 x=1
 #y number of people turn
@@ -21,7 +25,7 @@ Phumans > Ppets
 '''
 temp = []
 results = []
-print ("")
+count = 0
 while x < 5:
 	#print x
 	while y < 5:
@@ -67,10 +71,22 @@ while x < 5:
 					"outcome_MIT_moreVSless" : "turn",
 					"outcome_MIT_humansVSpets" : "turn"
 					}]
-			#print temp
+		#print (temp)
 		results.append(temp)
-		#print ("test")
-		#print results
+		count = count + 1
+		with open('resultsCSV.csv', mode='w',newline='') as results_file:
+			#results_writer = csv.writer(results_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+			results_writer = csv.writer(results_file)
+			results_writer.writerows(temp)
+		
 		y=y+1
 	x=x+1
-print (results[0])
+row=0
+col=0
+workbook = xlsxwriter.Workbook('results.xlsx') 
+worksheet = workbook.add_worksheet("My sheet") 
+for i in (results): 
+    worksheet.write(row, col, i) 
+    row += 1
+
+	#test
