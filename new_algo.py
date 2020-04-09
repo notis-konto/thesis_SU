@@ -4,6 +4,7 @@ import math
 import time
 import csv
 import xlsxwriter 
+import pandas
 
 
 
@@ -74,19 +75,28 @@ while x < 5:
 		#print (temp)
 		results.append(temp)
 		count = count + 1
-		with open('resultsCSV.csv', mode='w',newline='') as results_file:
-			#results_writer = csv.writer(results_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-			results_writer = csv.writer(results_file)
-			results_writer.writerows(temp)
+		#with open('resultsCSV.csv', mode='w',newline='') as results_file:
+		#	#results_writer = csv.writer(results_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+		#	results_writer = csv.writer(results_file)
+		#	results_writer.writerows(temp)
 		
 		y=y+1
+	
 	x=x+1
 row=0
 col=0
-workbook = xlsxwriter.Workbook('results.xlsx') 
-worksheet = workbook.add_worksheet("My sheet") 
-for i in (results): 
-    worksheet.write(row, col, i) 
-    row += 1
 
-	#test
+csv_columns = ['number straight','number turn','outcome_rational','outcome_MIT_PedestrianVSpassengers','outcome_MIT_fitVSlarge','outcome_MIT_femalaeVSmale','outcome_MIT_hightStatusVSlowerStatus','outcome_MIT_lawfulVSunlawful','outcome_MIT_youngVSelder','outcome_MIT_moreVSless','outcome_MIT_humansVSpets']
+csv_file = "resultsCVS.csv"
+for i in (results): 
+	print(i)
+	try:
+		with open(csv_file, 'w') as csvfile:
+			writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+			writer.writeheader()
+			for data in i:
+				writer.writerow(data)
+	except IOError:
+		print("I/O error")
+		
+		
