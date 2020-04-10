@@ -9,9 +9,9 @@ import pandas
 
 
 #x number of people straight
-x=1
+x=0
 #y number of people turn
-y=1
+
 Pall = 1
 '''
 #MIT output
@@ -28,7 +28,8 @@ temp = []
 results = []
 count = 0
 while x < 5:
-	#print x
+	#print (x)
+	y=0
 	while y < 5:
 	#	print y
 		if x < y:
@@ -72,7 +73,7 @@ while x < 5:
 					"outcome_MIT_moreVSless" : "turn",
 					"outcome_MIT_humansVSpets" : "turn"
 					}]
-		#print (temp)
+		print (temp)
 		results.append(temp)
 		count = count + 1
 		#with open('resultsCSV.csv', mode='w',newline='') as results_file:
@@ -81,7 +82,6 @@ while x < 5:
 		#	results_writer.writerows(temp)
 		
 		y=y+1
-	
 	x=x+1
 row=0
 col=0
