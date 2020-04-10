@@ -42,10 +42,10 @@ Phumans > Ppets
 temp = []
 results = []
 count = 0
-while x < 5:
+while x < 15:
 	#print (x)
 	y=0
-	while y < 5:
+	while y < 15:
 	#	print y
 		if x < y:
 			temp = {"number straight" : x,
