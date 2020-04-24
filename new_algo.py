@@ -21,6 +21,7 @@ P2_array = []
 data = []
 c = 0
 
+#Function to write data to excel
 def write_xls(filename, data):
 	wb = Workbook(write_only=True)
 	
@@ -38,20 +39,7 @@ def write_xls(filename, data):
 x=1
 #y number of people turn
 
-Pall = 1
-
-
-'''
-#MIT output
-Ppedestrian > Ppassenger
-Pfit > Plarge
-Pfemale > Pmale
-Phighstatus > Plowerstatus
-Plawful > Punlawful
-Pyoung > Pelder
-Pmore > Pless
-Phumans > Ppets
-'''
+#Declaration of tables
 temp = []
 calc1 = []
 calc2 = []
@@ -61,11 +49,9 @@ calc4 = []
 results = []
 probabilities =[]
 count = 0
-while x < 150:
-	#print (x)
+while x < 50:
 	y=1
-	while y < 150:
-	#	print y
+	while y < 50:
 		if x < y:
 			temp = {"number straight" : x,
 					"number turn" : y,
@@ -79,10 +65,12 @@ while x < 150:
 					"outcome_MIT_lawfulVSunlawful" : "turn",
 					"outcome_MIT_youngVSelder" : "turn",
 					"outcome_MIT_moreVSless" : "straight",
-					"outcome_MIT_humansVSpets" : "turn"
+					"outcome_MIT_humansVSpets" : "turn",
+					"outcome_GEC_moreVSless" : "straight",
+					"outcome_GEC_humansVSpets" : "turn",
+					"outcome_GEC_lawfulVSunlawfu" : "turn"
 					}
 			selection = 1
-			#print temp
 		elif x > y:
 			temp = {"number straight" : x,
 					"number turn" : y,
@@ -96,7 +84,10 @@ while x < 150:
 					"outcome_MIT_lawfulVSunlawful" : "turn",
 					"outcome_MIT_youngVSelder" : "turn",
 					"outcome_MIT_moreVSless" : "turn",
-					"outcome_MIT_humansVSpets" : "turn"
+					"outcome_MIT_humansVSpets" : "turn",
+					"outcome_GEC_moreVSless" : "turn",
+					"outcome_GEC_humansVSpets" : "turn",
+					"outcome_GEC_lawfulVSunlawfu" : "turn"
 					}
 			#print temp
 			selection = 2
@@ -113,7 +104,10 @@ while x < 150:
 					"outcome_MIT_lawfulVSunlawful" : "turn",
 					"outcome_MIT_youngVSelder" : "turn",
 					"outcome_MIT_moreVSless" : "no decision",
-					"outcome_MIT_humansVSpets" : "turn"
+					"outcome_MIT_humansVSpets" : "turn",
+					"outcome_GEC_moreVSless" : "no decision",
+					"outcome_GEC_humansVSpets" : "turn",
+					"outcome_GEC_lawfulVSunlawfu" : "turn"					
 					}
 			selection =2
 		results.append(temp)
@@ -125,25 +119,15 @@ while x < 150:
 		EV2 = p_side * P2
 		
 		P1=0.01
-		#print ("PROBABILITIES TO TURN FOR: Straigt = " + str(x) + ", turn = " + str(y) )
 
 		while P1 < 1.00:
 			check = False
-			#EV1_array = []
-			#P1_array = []
 			EV1=p_ahead * P1
 			EV1 = float("{:.2f}".format(EV1))
-			#EV1_array.append(EV1)
 			P2 = 0.01
-			#P1_array.append(P1)
 			while P2 < 1.00:
-				#print ("PROBABILITIES TO TURN FOR: Straigt = " + str(x) + ", turn = " + str(y) )
 				EV2 = p_side * P2
 				EV2 = float("{:.2f}".format(EV2))
-				#EV2_array = []
-				#P2_array = []
-				#EV2_array.append(EV2)
-				#P2_array.append(P2)
 				P1 = float("{:.2f}".format(P1))
 				P2 = float("{:.2f}".format(P2))
 				#if str(EV1) == str(EV2):
@@ -153,55 +137,38 @@ while x < 150:
 					#at this point we check the contitions. One check is to keep stable P1 and increase P2 and the other is to keep stable P2 and increase P1
 
 				if selection == 1:
-					#print ("PROBABILITIES TO TURN FOR: Straigt = " + str(x) + ", turn = " + str(y) )
 					if EV1 < (p_side * (P2+step)) and EV1 > (p_side * (P2-step)):
 						calc1data = "[0.01,"+str(P2)+")"
 						calc1 = {"number straight" : x,
 								"number turn" : y,
 								"P1":P1, 
 								"P2": calc1data}
-						#print (calc1)
-						temp.update( calc1 )
 						probabilities.append(calc1)
-						#print ("after that point,having the same probability P1 and increasing P2, the EV of the people on the side is higher, so the car should go ahead. Before that point,decreasing P2, the car should have selected to turn. \n")
 					elif EV1 > (p_side * (P2+step)) and EV1 < (p_side * (P2-step)):
-						#calc2 = print ("2.P1: " + str(P1) + " , P2: (" + str(P2) + ", 1] ")
 						calc2data = "("+str(P2)+", 1]"
 						calc2 = {"number straight" : x,
 								"number turn" : y,
 								"P1":P1,
 								"P2": calc2data
 								}
-							#print (calc2)
-							#temp.update( calc2 )
 						probabilities.append(calc2)
-						#	print ("after that point,having the same probability P1 and increasing P2, the EV of the people ahead is higher, so the car should turn. Before,decreasing P2, that point the car should have selected to go ahead. \n")
 					if (p_ahead * (P1+step)) < EV2 and (p_ahead * (P1-step)) > EV2:
-						#calc3 = print ("3.P1: (0.01," + str(P1) + ") , P2: " + str(P2) )
 						calc3data = "(0.01," + str(P1) + ")"
 						calc3 = {"number straight" : x,
 								"number turn" : y,
 								"P1":calc3data,
 								"P2":P2
 								}
-						temp.update( calc3 )
 						probabilities.append(calc3)
-						#	print ("after that point,having the same probability P2 and increasing P1, the EV of the people on the side is higher, so the car should go ahead.Before,decreasing P1, that point the car should have selected to turn. \n")
 					elif (p_ahead * (P1+step)) > EV2 and (p_ahead * (P1-step)) < EV2:
-							#calc41 = ("4.P1: (" + str(P1) + ", 1], P2: " + str(P2))
 						calc4data = "(" + str(P1) + ", 1]"
 						calc4 = {"number straight" : x,
 								"number turn" : y,
 								"P1":calc4data,
 								"P2":P2
 								}
-							#print (calc4)
-							#print (calc41)
-							#temp.update( calc4 )
 						probabilities.append(calc4)
-						#	print ("after that point,having the same probability P2 and increasing P1, the EV of the people ahead is higher, so the car should turn.Before that point,decreasing P1, the car should have selected to go ahead. \n")
 					else:
-						#print ("ZONG")
 						None
 				P2 = P2 + step
 			P1 = P1 + step
@@ -209,9 +176,7 @@ while x < 150:
 
 		y=y+1
 	x=x+1
-#print (probabilities)
-#write_xls("resultsCVS.csv",results)
+write_xls("resultsCVS.csv",results)
 write_xls("results-prob.csv",probabilities)
-
 
 
