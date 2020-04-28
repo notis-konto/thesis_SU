@@ -1,10 +1,5 @@
 #!/usr/lib/python
 from __future__ import division
-import math
-import time
-import csv
-import xlsxwriter 
-#import pandas
 import itertools
 from openpyxl import Workbook
 
@@ -20,7 +15,10 @@ P1_array = []
 P2_array = []
 data = []
 c = 0
-
+tempP1 = None
+tempP2 = None
+def myFunc(e):
+	return e['P2']
 #Function to write data to excel
 def write_xls(filename, data):
 	wb = Workbook(write_only=True)
@@ -49,9 +47,9 @@ calc4 = []
 results = []
 probabilities =[]
 count = 0
-while x < 50:
+while x < 51:
 	y=1
-	while y < 50:
+	while y < 51:
 		if x < y:
 			temp = {"number straight" : x,
 					"number turn" : y,
@@ -117,9 +115,11 @@ while x < 50:
 		p_side = y
 		EV1 = p_ahead * P1
 		EV2 = p_side * P2
-		
+		sorted1 = []
+		sorted2 = []
 		P1=0.01
-
+		
+		tempP2 = None
 		while P1 < 1.00:
 			check = False
 			EV1=p_ahead * P1
@@ -130,53 +130,59 @@ while x < 50:
 				EV2 = float("{:.2f}".format(EV2))
 				P1 = float("{:.2f}".format(P1))
 				P2 = float("{:.2f}".format(P2))
-				#if str(EV1) == str(EV2):
-					#print ("with probabilities P1=" + str(P1) + " and P2=" + str(P2) + " the EV is the same EV=" + str(EV1))
-					#print ("next p side:" + p_side * (P2+step) + " ,previous p side: " + p_side * (P2-step) + " ,next p ahed: " + p_ahead * (P1+step) + " ,previous p ahead:  " + p_ahead * (P1-step) )
-
-					#at this point we check the contitions. One check is to keep stable P1 and increase P2 and the other is to keep stable P2 and increase P1
-
 				if selection == 1:
-					if EV1 < (p_side * (P2+step)) and EV1 > (p_side * (P2-step)):
-						calc1data = "[0.01,"+str(P2)+")"
-						calc1 = {"number straight" : x,
-								"number turn" : y,
-								"P1":P1, 
-								"P2": calc1data}
-						probabilities.append(calc1)
-					elif EV1 > (p_side * (P2+step)) and EV1 < (p_side * (P2-step)):
-						calc2data = "("+str(P2)+", 1]"
-						calc2 = {"number straight" : x,
-								"number turn" : y,
-								"P1":P1,
-								"P2": calc2data
-								}
-						probabilities.append(calc2)
-					if (p_ahead * (P1+step)) < EV2 and (p_ahead * (P1-step)) > EV2:
-						calc3data = "(0.01," + str(P1) + ")"
-						calc3 = {"number straight" : x,
-								"number turn" : y,
-								"P1":calc3data,
-								"P2":P2
-								}
-						probabilities.append(calc3)
-					elif (p_ahead * (P1+step)) > EV2 and (p_ahead * (P1-step)) < EV2:
-						calc4data = "(" + str(P1) + ", 1]"
-						calc4 = {"number straight" : x,
-								"number turn" : y,
-								"P1":calc4data,
-								"P2":P2
-								}
-						probabilities.append(calc4)
+					if (EV1 < (p_side * (P2+step)) and EV1 > (p_side * (P2-step))) and (EV1 != EV2 and EV1 > EV2 ):
+						if (P2-step) > 0 :
+							calc1data = "[0.01,"+str(P2)+"]"
+							calc1 = {"number straight" : x,
+									"number turn" : y,
+									"original_outcome_rational" : "straight",
+									"new_outcome_rational" : "turn",
+									"B2" : "lawfulVSunlawful", 
+									"B4" : "PedestrianVSpassengers",
+									"B5" : "youngVSelder",
+									"B6" : "fitVSlarge",
+									"B7" : "femaleVSmale",
+									"B8" : "hightStatusVSlowerStatus",
+									"LowerLimit" : "0.01",
+									"UpperLimit" : str(P2),
+									"P1":P1,
+									"P2": calc1data,
+									"EV1" : str(EV1),
+									"EV2" : str(EV2)
+									}
+							tempP1 = calc1
+					if ( (p_ahead * (P1+step)) > EV2) and (EV1 != EV2 and EV1 > EV2):
+						if 	(P1-step) > 0:
+							calc4data = "[" + str(P1) + ", 1]"
+							calc4 = {"number straight" : x,
+									"number turn" : y,
+									"original_outcome_rational" : "straight",
+									"new_outcome_rational" : "turn",
+									"B2" : "lawfulVSunlawful", 
+									"B4" : "PedestrianVSpassengers",
+									"B5" : "youngVSelder",
+									"B6" : "fitVSlarge",
+									"B7" : "femaleVSmale",
+									"B8" : "hightStatusVSlowerStatus",
+									"LowerLimit" : str(P1),
+									"UpperLimit" : 1,
+									"P1":calc4data,
+									"P2": P2,
+									"EV1" : str(EV1),
+									"EV2" : str(EV2)
+									}
+							if not tempP2:
+								tempP2 = calc4
+								probabilities.append(tempP2)
 					else:
 						None
 				P2 = P2 + step
+			if tempP1:
+				probabilities.append(tempP1)
+				tempP1 = None
 			P1 = P1 + step
-
-
 		y=y+1
 	x=x+1
 write_xls("resultsCVS.csv",results)
 write_xls("results-prob.csv",probabilities)
-
-
