@@ -184,5 +184,5 @@ while x < 51:
 			P1 = P1 + step
 		y=y+1
 	x=x+1
-write_xls("resultsCVS.csv",results)
-write_xls("results-prob.csv",probabilities)
+write_xls("results.csv",results)
+write_xls("probabilities.csv",probabilities)
